@@ -8,44 +8,47 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class OrderTest {
-    private WebDriver driver;
-    private MainPage mainPage;
 
-    @Test
-    public void ButtonTest() throws InterruptedException {
-        System.setProperty("webdriver.chrome.driver", "D:\\WebDriver\\bin\\chromedriver.exe");
-        driver = new ChromeDriver(); // GoogleChrome
+    private WebDriver Driver;
+    private String Name;
+    private String Surname;
+    private String Adress;
+    private String Station;
+    private String Phone;
+    private String Comment;
+    private String Date;
 
-        mainPage = new MainPage(driver);
-        driver.get("https://qa-scooter.praktikum-services.ru/");
-        driver.manage().window().maximize();  //Расширение экрана
 
-        mainPage.clickOrderButton();
-        new WebDriverWait(driver, 10).until(ExpectedConditions.numberOfElementsToBe(By.tagName("input"), 6));
-        var firstinput=driver.findElement(By.xpath("//*[@id=\"root\"]/div/div[2]/div[2]/div[1]/input"));
-        firstinput.sendKeys("тестимя");
-        var secondinput=driver.findElement(By.xpath("//*[@id=\"root\"]/div/div[2]/div[2]/div[2]/input"));
-        secondinput.sendKeys("тестфамилия");//shift + f6
-        var thridinput=driver.findElement(By.xpath("//*[@id=\"root\"]/div/div[2]/div[2]/div[3]/input"));
-        thridinput.sendKeys("тестадрес");
-        var fourthinput=driver.findElement(By.xpath("//*[@id=\"root\"]/div/div[2]/div[2]/div[4]/div"));
-        fourthinput.click();
-        var findselecteditem = driver.findElement(By.xpath(".//*[text() = 'Черкизовская']"));
-        findselecteditem.click();
-        var fifthinput=driver.findElement(By.xpath("//*[@id=\"root\"]/div/div[2]/div[2]/div[5]/input"));
-        fifthinput.sendKeys("01234567890");
+    public OrderTest(String name, String surname,String adress,String station,String phone,String comment, String date, WebDriver driver)
+    {
+        Name=name;
+        Surname=surname;
+        Adress=adress;
+        Driver=driver;
+        Station=station;
+        Phone=phone;
+        Comment=comment;
+        Date=date;
+    }
 
-        driver.findElement(new By.ByXPath("//*[@id=\"root\"]/div/div[2]/div[3]/button")).click();
-
-        var comment = driver.findElement(new By.ByXPath("//*[@id=\"root\"]/div/div[2]/div[2]/div[4]/input"));
-        comment.sendKeys("тесткоммент");
-        var days = driver.findElement(new By.ByXPath("//*[@id=\"root\"]/div/div[2]/div[2]/div[2]/div/div[1]"));
-        days.click();
-        var daysselect = driver.findElement(new By.ByXPath("//*[@id=\"root\"]/div/div[2]/div[2]/div[2]/div[2]/div[1]"));
-        daysselect.click();
-        var date = driver.findElement(new By.ByXPath("//*[@id=\"root\"]/div/div[2]/div[2]/div[1]/div[1]/div/input"));
-        date.sendKeys("02.02.2024");
-        driver.findElement(new By.ByXPath("//*[@id=\"root\"]/div/div[2]/div[3]/button[2]")).click();
-        driver.findElement(new By.ByXPath("//*[@id=\"root\"]/div/div[2]/div[5]/div[2]/button[2]")).click();
+    public void TestStart() {
+        //System.setProperty("webdriver.chrome.driver", "D:\\WebDriver\\bin\\chromedriver.exe");
+        Driver.get("https://qa-scooter.praktikum-services.ru/");
+        var firstPageObject = new FirstPage(Driver);
+        new WebDriverWait(Driver, 10).until(ExpectedConditions.numberOfElementsToBe(By.tagName("input"), 6));
+        var secondPageObject = new SecondPage(Name,Surname,Adress,Station,Phone,Driver);
+        secondPageObject.fillName();
+        secondPageObject.fillSurname();
+        secondPageObject.fillAdress();
+        secondPageObject.fillStation();
+        secondPageObject.fillPhone();
+        secondPageObject.clickNextPage();
+        var thirdPageObject = new ThirdPage(Comment,Date,Driver);
+        thirdPageObject.fillComment();
+        thirdPageObject.fillRent();
+        thirdPageObject.fillDate();
+        thirdPageObject.clickOrder();
+        thirdPageObject.clickConfirm();
+        thirdPageObject.checkOrder();
     }
 }
